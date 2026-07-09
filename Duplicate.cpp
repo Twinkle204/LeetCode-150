@@ -27,6 +27,7 @@ int removeDuplicates(vector<int>& nums) {
     nums = Newnums;
     return nums.size();
 }
+
 //“利用空间位置（索引差）来代替状态变量”的编程思想
 //最简单的写法
 //可以扩展到k个元素的情况
