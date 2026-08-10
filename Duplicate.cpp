@@ -31,7 +31,7 @@ int removeDuplicates(vector<int>& nums) {
 //“利用空间位置（索引差）来代替状态变量”的编程思想
 //最简单的写法
 //可以扩展到k个元素的情况
-// class Solution {
+// class Solution 
 //     public int removeDuplicates(int[] nums) {
 //         // 数组中的一号和二号元素肯定不用删除
 //         int count = 2;
@@ -42,4 +42,3 @@ int removeDuplicates(vector<int>& nums) {
 //         }
 //         return count;
 //     }
-// }
