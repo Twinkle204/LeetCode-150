@@ -1,74 +1,65 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <stack>
 using namespace std;
 
+//解答此题过程中，我学会了利用打一些输出来验证自己到底是哪一步出了问题，不再是脑补，更快了解决了存在的各类bug
 class Solution {
 public:
-    int jump(vector<int>& nums) {
-        stack<int> route;
-        int lastindex = 0;
-        //用一个额外的数组来存储当前的点是否被走过
-        //在当前lastindex能走的步数中，我们考差这一段数组，遍历寻找其中能走到的地方最远的点，前没有被走过的步数
-        vector<int>storage (nums.size(),0);
-        storage[0] = 1;
-        route.push(0);
-        //我发现下面的代码无法处理一步或直接走到终点的情况，所以我单独写一种方法来处理
-         if(nums[0] >= nums.size() - 1)
-        {
-            if(nums.size() == 1)
-            {
-                return 0;
-            }
-            return 1;
-        }
-        while (lastindex < nums.size() - 1) {
-            int max = -1;
-            int bestIndex = -1;
-
-            if (lastindex + nums[lastindex] >= nums.size() - 1) {
-                route.push(nums.size() - 1);
-                break;
-            }
-            //不能再循环内部修改循环条件，会导致bug
-            int reach = min(lastindex + nums[lastindex], int(nums.size() - 1));
-            for (int i = lastindex + 1; i <= reach; i++) {
-                if (nums[i] + i >= max && storage[i] == 0) {
-                    bestIndex = i;
-                    max = nums[i] + i;
-                }
-            }
-
-            if (bestIndex == -1) {
-                if (route.size() <= 1) {
+    int hIndex(vector<int>& citations) {
+    //首先想到的解法是从文章数量数n开始，反复验证是否有n篇文章引用数大于n
+    //但这样的话时间复杂度为O（n^2）不是很合适
+    //可以先对数组排序，选择升序
+    //之后我们从第一个数组的下标开始，看他往后能否推到对应位置，可以的话就选他;
+        sort(citations.begin(),citations.end());
+        // cout << "排序完成" << endl;
+        int h = 0;
+        int currentindex = 0;
+        while(currentindex < citations.size())
+        {   
+            //如果数组越界则这个点不可能是h值
+            //或者当currentindex + citations[currentindex] - 1 为-1时数组越界
+            if(citations.size() == 1 || citations[currentindex] == 0){
+                if(citations.size() == 1 && citations[0] == 0)
+                {
                     return 0;
+                }else if(citations.size() == 1 && citations[0] != 0)
+                {
+                    return 1;
                 }
-                route.pop();
-                lastindex = route.top();
-            } else {
-                lastindex = bestIndex;
-                storage[lastindex] = 1;
-                route.push(lastindex);
+                //若数组大小大于一，且第一个下标的值是0.为了避免后续citations[currentindex + citations[currentindex] - 1] 卡住，直接加一
+                currentindex++;
+                // cout<<h<<"1"<<endl;
+                continue;
             }
+            if(currentindex + citations[currentindex] - 1 >= citations.size())
+            {//若当前大小超出了数组范围，则只需要数后续一共有多少数
+                //并且这个数应该是要和之前所解答的h做比较的，谁多选谁
+                h = max(int(citations.size() - currentindex),h);
+                // cout<<h<<"4"<<endl;
+                return h;
+            }
+            if(citations[currentindex + citations[currentindex] - 1] >= citations[currentindex])
+            {
+                h = citations[currentindex];
+                // cout<<h<<"2"<<endl;
+                currentindex++;
+            }else
+            {
+                currentindex++;
+                // cout<<h<<"3"<<endl;
+            } 
         }
 
-        print(route);
-        return (int)route.size() - 1;
-    }   
-    void print(stack<int>& nums){
-        stack<int> temp = nums;
-        while (!temp.empty()) {
-            cout << temp.top() << endl;
-            temp.pop();
-        }
+        return h;
     }
 };
 
 
 
 int main(){
-    vector<int> nums = {1,1,1,1};
-    Solution A;
-    int a = A.jump(nums); 
-    cout << a;
+    Solution s;
+    vector<int> nums  = {0,0,2};
+    s.hIndex(nums);
 }
