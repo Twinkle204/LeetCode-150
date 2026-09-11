@@ -1,6 +1,9 @@
-#include <iostream>
-#include <vector>
-using namespace std;
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        
+    }
+};
 
 //ai解答
 //标准纵向扫描
